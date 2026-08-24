@@ -35,6 +35,7 @@ import {
   preAuthorizeUsageOrder,
   ApiHttpError,
   requestUsageOrder,
+  type UsageOrderPayResult,
 } from "@/lib/api";
 
 
@@ -97,6 +98,20 @@ const TOP_UP_MAX_KRW = 1_000_000;
 function topUpAmountFromShortfall(shortfallKrw: number): number {
   if (shortfallKrw <= 0) return 5_000;
   return Math.max(TOP_UP_MIN_KRW, Math.min(TOP_UP_MAX_KRW, shortfallKrw));
+}
+
+/** 결제 성공 — 사용액·잔액을 한 줄에 */
+function formatPaySuccessMessage(paid: UsageOrderPayResult): string {
+  const parts = ["결제가 완료되었습니다"];
+  const spent = paid.order.pointsSpent;
+  if (typeof spent === "number" && Number.isFinite(spent)) {
+    parts.push(`${spent.toLocaleString("ko-KR")}P 사용`);
+  }
+  const balance = paid.order.balance;
+  if (typeof balance === "number" && Number.isFinite(balance)) {
+    parts.push(`잔액 ${balance.toLocaleString("ko-KR")}P`);
+  }
+  return parts.join(" · ");
 }
 
 export function StationDetailCard() {
@@ -304,7 +319,7 @@ export function StationDetailCard() {
           setPointsBalance(paid.order.balance);
         }
         setChargeSettled(true);
-        setChargePayMessage(paid.message || "요금 정산이 완료되었습니다");
+        setChargePayMessage(formatPaySuccessMessage(paid));
         setPendingOrderId(null);
         setPendingFeeReady(false);
         setShortfallKrw(0);
@@ -401,7 +416,7 @@ export function StationDetailCard() {
         setPointsBalance(paid.order.balance);
       }
       setChargeSettled(true);
-      setChargePayMessage(paid.message || "요금 정산이 완료되었습니다");
+      setChargePayMessage(formatPaySuccessMessage(paid));
       setPendingOrderId(null);
       setPendingFeeReady(false);
       setShortfallKrw(0);
@@ -1077,9 +1092,7 @@ export function StationDetailCard() {
                       setPointsBalance(paid.order.balance);
                     }
                     setChargeSettled(true);
-                    setChargePayMessage(
-                      paid.message || "요금 정산이 완료되었습니다",
-                    );
+                    setChargePayMessage(formatPaySuccessMessage(paid));
                     setPendingOrderId(null);
                     setPendingFeeReady(false);
                     setShortfallKrw(0);
