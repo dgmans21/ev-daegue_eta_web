@@ -125,11 +125,19 @@ function LoginPageContent() {
     useEffect(() => {
       const oauthError = searchParams.get("oauthError");
       if (!oauthError) return;
+      setIsSocialLoading(false);
       setError(formatOAuthError(oauthError));
       const url = new URL(window.location.href);
       url.searchParams.delete("oauthError");
       window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
     }, [searchParams]);
+
+    /** 소셜 취소 후 뒤로가기(bfcache) 시 「이동 중…」 잔상 해제 → 다른 로그인 가능 */
+    useEffect(() => {
+      const unlock = () => setIsSocialLoading(false);
+      window.addEventListener("pageshow", unlock);
+      return () => window.removeEventListener("pageshow", unlock);
+    }, []);
 
     useEffect(() => {
       if (typeof window === "undefined") return;

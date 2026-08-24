@@ -140,6 +140,7 @@ export function StationDetailCard() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const setPointsBalance = useAuthStore((s) => s.setPointsBalance);
   const usageDraft = useUsageDraftStore((s) => s.draft);
+  const setUsageDraft = useUsageDraftStore((s) => s.setDraft);
   const clearUsageDraft = useUsageDraftStore((s) => s.clear);
   const center = useMapStore((s) => s.center);
   const zoom = useMapStore((s) => s.zoom);
@@ -236,6 +237,8 @@ export function StationDetailCard() {
   const station = stations.find((s) => s.stationId === selectedId);
   if (!station) return null;
   const stationId = station.stationId;
+  const stationLat = station.lat;
+  const stationLng = station.lng;
   const recItem = recommendActive
     ? recommendItems.find((i) => i.statId === stationId)
     : undefined;
@@ -280,6 +283,7 @@ export function StationDetailCard() {
         mode: chargeDraft.mode,
       });
       heldId = held.id;
+      setUsageDraft(held, { lat: stationLat, lng: stationLng });
       if (typeof held.balance === "number") {
         setPointsBalance(held.balance);
       }
@@ -287,6 +291,7 @@ export function StationDetailCard() {
         mode: chargeDraft.mode,
         kwh: chargeDraft.mode === "usage" ? chargeDraft.kwh : undefined,
       });
+      setUsageDraft(completed, { lat: stationLat, lng: stationLng });
       if (typeof completed.shortfallKrw === "number") {
         setShortfallKrw(completed.shortfallKrw);
         if (completed.shortfallKrw > 0) {

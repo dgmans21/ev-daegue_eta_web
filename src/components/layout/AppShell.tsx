@@ -8,6 +8,7 @@ import { MapView } from "@/components/map/MapView";
 import { StationList } from "@/components/map/StationList";
 import { MobileStationSheet } from "@/components/map/MobileStationSheet";
 import { DestinationNearbyChip } from "@/components/map/DestinationNearbyChip";
+import { DraftHoldBanner } from "@/components/map/DraftHoldBanner";
 import { SearchThisAreaButton } from "@/components/map/SearchThisAreaButton";
 import { CarPanel } from "@/components/car/CarPanel";
 import { FavoriteNoticeSheet } from "@/components/favorites/FavoriteNoticeSheet";
@@ -266,17 +267,20 @@ export function AppShell() {
           <MapView />
 
           {/* 지도 상단 칩 스택: 도착지「이 주변 충전소」+「주변 탐색하기」 */}
-          {!searchUiOpen ? (
-            <div
-              className={[
-                "pointer-events-none absolute inset-x-0 z-[40] flex flex-col items-center gap-2 px-3",
-                isCompact ? "top-[9rem]" : "top-[6.5rem]",
-              ].join(" ")}
-            >
-              <DestinationNearbyChip />
-              <SearchThisAreaButton />
-            </div>
-          ) : null}
+          <div
+            className={[
+              "pointer-events-none absolute inset-x-0 z-[40] flex flex-col items-center gap-2 px-3",
+              isCompact ? "top-[9rem]" : "top-[6.5rem]",
+            ].join(" ")}
+          >
+            <DraftHoldBanner />
+            {!searchUiOpen ? (
+              <>
+                <DestinationNearbyChip />
+                <SearchThisAreaButton />
+              </>
+            ) : null}
+          </div>
 
           {!isCompact ? (
             <button

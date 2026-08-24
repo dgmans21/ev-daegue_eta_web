@@ -3,8 +3,10 @@ import { sanitizeReturnUrl } from "@/lib/auth/returnUrl";
 import { useAuthStore } from "@/stores/authStore";
 import { useFavoriteStore } from "@/stores/favoriteStore";
 import { useCarStore } from "@/stores/carStore";
-import { useMapStore } from "@/stores/mapStore";
-import { useUsageDraftStore } from "@/stores/usageDraftStore";
+import {
+  resumeDraftOnMap,
+  useUsageDraftStore,
+} from "@/stores/usageDraftStore";
 export type OAuthProvider = "kakao" | "google" | "naver";
 
 const ACCESS_TOKEN_KEY = "accessToken";
@@ -73,7 +75,7 @@ export async function handlePostLoginLanding(): Promise<void> {
     ]);
     const draft = useUsageDraftStore.getState().draft;
     if (draft?.statId) {
-      useMapStore.getState().setSelectedId(draft.statId);
+      await resumeDraftOnMap();
     }
   } else {
     useFavoriteStore.getState().clear();
