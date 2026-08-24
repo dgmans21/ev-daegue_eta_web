@@ -12,6 +12,26 @@ import { useMapStore } from "@/stores/mapStore";
 const fieldClass =
   "mt-1.5 w-full rounded-[var(--radius-md)] border border-[var(--border)] bg-white px-3 py-2.5 text-[16px] text-[var(--text)] outline-none focus:border-[var(--accent)] sm:text-[14px]";
 
+/** StationList와 동일 톤 — 가용 원·라벨. 거리·주차는 favorites에 없음. */
+function formatAvailable(count: number | null): { label: string; tone: string } {
+  if (count === null) {
+    return {
+      label: "미관측",
+      tone: "text-[var(--text-muted)] bg-[var(--surface-muted)]",
+    };
+  }
+  if (count === 0) {
+    return {
+      label: "충전가능 0",
+      tone: "text-[var(--warning)] bg-[var(--warning-soft)]",
+    };
+  }
+  return {
+    label: `충전가능 ${count}`,
+    tone: "text-[var(--success)] bg-[var(--success-soft)]",
+  };
+}
+
 /**
  * 즐겨찾기 패널.
  * - 비로그인: 상단 안내 + 메뉴 열람. 등록은 로그인 후.
@@ -138,7 +158,7 @@ function FavoritesListShell() {
 
   return (
     <div className="ev-scroll-panel min-h-0 flex-1 overflow-y-auto px-2 py-1.5">
-      <ul className="space-y-1">
+      <ul className="space-y-0.5">
         {items.map((item) => (
           <FavoriteListRow key={item.stationId} item={item} />
         ))}
@@ -197,92 +217,114 @@ function FavoriteListRow({ item }: { item: FavoriteItem }) {
     setEditing(false);
   };
 
+  const count = item.availableCount;
+  const avail = formatAvailable(count);
+
   return (
-    <li
-      className={[
-        "rounded-[var(--radius-md)] px-2 py-2",
-        active ? "bg-[var(--accent-soft)]" : "hover:bg-[var(--surface-muted)]",
-      ].join(" ")}
-    >
-      <div className="flex items-start gap-1">
-        <button
-          type="button"
-          onClick={openStation}
-          className="min-w-0 flex-1 px-1 py-1 text-left touch-manipulation"
-        >
-          <span className="block truncate text-[13px] font-semibold text-[var(--text)]">
-            {item.name ?? item.stationId}
-          </span>
-          <span className="mt-0.5 block truncate text-[11px] text-[var(--text-muted)]">
-            {item.address ?? "주소 없음"}
-          </span>
-        </button>
-        <FavoriteStarButton stationId={item.stationId} variant="list" />
-      </div>
-      {editing ? (
-        <div className="mt-1.5 px-1">
-          <input
-            ref={inputRef}
-            type="text"
-            value={memo}
-            maxLength={100}
-            enterKeyHint="done"
-            autoComplete="off"
-            placeholder="한 줄 메모"
-            onChange={(e) => setMemo(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") cancelEdit();
-              if (e.key === "Enter" && dirty && !saving) void saveMemo();
-            }}
-            className="w-full rounded-[8px] border border-[var(--border)] bg-white px-2.5 py-2.5 text-[16px] text-[var(--text)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] sm:py-1.5 sm:text-[13px]"
-          />
-          <div className="mt-1.5 flex justify-end gap-1">
-            <button
-              type="button"
-              disabled={saving}
-              onClick={cancelEdit}
-              className="min-h-9 rounded-[8px] px-3 touch-manipulation"
+    <li>
+      <div
+        className={[
+          "rounded-[var(--radius-md)] transition-colors",
+          active ? "bg-[var(--accent-soft)]" : "hover:bg-[var(--surface-muted)]",
+        ].join(" ")}
+      >
+        <div className="flex w-full items-start gap-1">
+          <button
+            type="button"
+            onClick={openStation}
+            className="flex min-w-0 flex-1 items-start gap-3 px-3 py-2.5 text-left touch-manipulation"
+          >
+            <span
+              className={[
+                "mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-[12px] font-bold",
+                avail.tone,
+              ].join(" ")}
             >
-              <span className="text-[11px] font-medium text-[var(--text-muted)]">
-                취소
+              {count === null ? "—" : count}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[13px] font-semibold text-[var(--text)]">
+                {item.name ?? item.stationId}
               </span>
-            </button>
+              <span className="mt-0.5 block truncate text-[11px] text-[var(--text-muted)]">
+                {item.address ?? "주소 없음"}
+              </span>
+              <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-[var(--text-secondary)]">
+                <span className={avail.tone.split(" ")[0]}>{avail.label}</span>
+              </span>
+            </span>
+          </button>
+          <FavoriteStarButton
+            stationId={item.stationId}
+            variant="list"
+            className="mr-1.5"
+          />
+        </div>
+        {editing ? (
+          <div className="border-t border-[var(--border)]/60 px-3 pb-2.5 pt-1.5">
+            <input
+              ref={inputRef}
+              type="text"
+              value={memo}
+              maxLength={100}
+              enterKeyHint="done"
+              autoComplete="off"
+              placeholder="한 줄 메모"
+              onChange={(e) => setMemo(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") cancelEdit();
+                if (e.key === "Enter" && dirty && !saving) void saveMemo();
+              }}
+              className="w-full rounded-[8px] border border-[var(--border)] bg-white px-2.5 py-2.5 text-[16px] text-[var(--text)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] sm:py-1.5 sm:text-[13px]"
+            />
+            <div className="mt-1.5 flex justify-end gap-1">
+              <button
+                type="button"
+                disabled={saving}
+                onClick={cancelEdit}
+                className="min-h-9 rounded-[8px] px-3 touch-manipulation"
+              >
+                <span className="text-[11px] font-medium text-[var(--text-muted)]">
+                  취소
+                </span>
+              </button>
+              <button
+                type="button"
+                disabled={!dirty || saving}
+                onClick={() => void saveMemo()}
+                className="min-h-9 rounded-[8px] border border-[var(--border)] bg-white px-3 touch-manipulation disabled:opacity-40"
+              >
+                <span className="text-[11px] font-medium text-[var(--text)]">
+                  {saving ? "저장 중" : "저장"}
+                </span>
+              </button>
+            </div>
+          </div>
+        ) : savedMemo ? (
+          <div className="flex items-start gap-1 border-t border-[var(--border)]/60 px-3 pb-2 pt-1">
+            <p className="min-w-0 flex-1 py-1.5 text-[12px] leading-snug text-[var(--text-secondary)]">
+              {savedMemo}
+            </p>
             <button
               type="button"
-              disabled={!dirty || saving}
-              onClick={() => void saveMemo()}
-              className="min-h-9 rounded-[8px] border border-[var(--border)] bg-white px-3 touch-manipulation disabled:opacity-40"
+              onClick={startEdit}
+              className="shrink-0 min-h-9 rounded-[8px] px-2.5 touch-manipulation"
             >
-              <span className="text-[11px] font-medium text-[var(--text)]">
-                {saving ? "저장 중" : "저장"}
+              <span className="text-[11px] font-medium text-[var(--accent)]">
+                수정
               </span>
             </button>
           </div>
-        </div>
-      ) : savedMemo ? (
-        <div className="mt-1 flex items-start gap-1 px-1">
-          <p className="min-w-0 flex-1 py-1.5 text-[12px] leading-snug text-[var(--text-secondary)]">
-            {savedMemo}
-          </p>
+        ) : (
           <button
             type="button"
             onClick={startEdit}
-            className="shrink-0 min-h-9 rounded-[8px] px-2.5 touch-manipulation"
+            className="min-h-9 w-full border-t border-[var(--border)]/60 px-3 py-1.5 text-left touch-manipulation"
           >
-            <span className="text-[11px] font-medium text-[var(--accent)]">
-              수정
-            </span>
+            <span className="text-[11px] text-[var(--text-muted)]">메모 추가</span>
           </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={startEdit}
-          className="mt-0.5 min-h-9 w-full px-1 py-1 text-left touch-manipulation"
-        >
-          <span className="text-[11px] text-[var(--text-muted)]">메모 추가</span>
-        </button>
-      )}
+        )}
+      </div>
     </li>
   );
 }
