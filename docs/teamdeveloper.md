@@ -3154,3 +3154,29 @@ unCategorySearch: center + radiusKm, 성공 무메시지, 실패 console.error.
 
 ### 다음
 - 수동: 402 → 새로고침 → 해당 충전소 카드에서 이어하기/취소 확인.
+
+## 2026-08-24 — draft 홀드 지도 배너
+
+### 한 일
+- DraftHoldBanner: draft 있고 해당 충전소 카드가 닫혀 있으면 안내 + 이어하기/취소.
+- 가결제 성공 시 usageDraftStore.setDraft — 같은 세션에서 카드만 닫아도 배너 표시.
+- 새로고침·재접속 자동 거래창 복구는 유지.
+
+### 결정
+- 자동 TTL 환불은 아직 없음. 사용자가 이어하기/취소.
+- 해당 충전소 선택 중이면 배너 숨김(DetailCard 문구에 맡김).
+
+### 다음
+- 필요 시 TTL/lazy expire.
+
+## 2026-08-24 — draft 이어하기 카메라·목록
+
+### 한 일
+- resumeDraftOnMap: 좌표로 ensureStationLoaded + selectStation(카메라 이동·거래창 복구).
+- 가결제 시 lat/lng를 sessionStorage에 보관 — 목록 밖 충전소도 이어하기/재접속 가능.
+
+### 결정
+- BE draft에 좌표 필드 추가는 보류. 같은 탭 session 좌표 + 이름 검색 폴백.
+
+### 다음
+- 필요 시 usage-orders 응답에 lat/lng.
