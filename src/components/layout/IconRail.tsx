@@ -119,15 +119,17 @@ export function IconRail({
       aria-label="주 메뉴"
     >
       <div
-        className="mb-6 flex h-10 w-10 items-center justify-center rounded-[10px] bg-[var(--text)] text-white"
-        title="EV SafeCharge"
+        className="mb-6 flex h-11 w-11 items-center justify-center"
+        title="ChargePick"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path
-            d="M13 2 4 14h7l-1 8 10-14h-7l0-6Z"
-            fill="currentColor"
-          />
-        </svg>
+        <img
+          src="/brand/logo.png"
+          alt="ChargePick"
+          width={44}
+          height={44}
+          className="h-11 w-11 object-contain"
+          draggable={false}
+        />
       </div>
 
       <nav className="flex flex-1 flex-col gap-1.5">
