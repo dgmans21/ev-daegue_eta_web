@@ -3180,3 +3180,27 @@ unCategorySearch: center + radiusKm, 성공 무메시지, 실패 console.error.
 
 ### 다음
 - 필요 시 usage-orders 응답에 lat/lng.
+
+## 2026-08-26 — 온보딩 가이드 §4.7 지도 위치 모델
+
+### 한 일
+- 풀스택_아키텍처_온보딩_가이드.md에 §4.7 추가: watch / test / follow / 일회 팬 / stationsAnchor / destination 역할 분리, 주변 탐색·도착지·현위치 흐름, 흔한 오해 표.
+- §0 문서표·§4.1·§6에 §4.7 교차 링크.
+
+### 결정
+- 카메라 일회 팬과 follow는 별개. 도착지 선택 시 watch/coords는 옮기지 않음. stationsAnchor만 충전소 조회 원점.
+
+### 다음
+- 세부 UI·컴포넌트 트리는 기존 mapguides.md 유지. 개념 혼동 시 §4.7 먼저.
+## 2026-08-27 — 브랜드 로고로 사이드레일 아이콘 교체
+
+### 한 일
+- PC IconRail 상단의 검은 번개 SVG를 \web/public/brand/logo.png\ 실로고로 교체.
+- 원본 사각형 흰 배경만 제거하고, 로고 본체의 흰 스티커 테두리는 유지.
+
+### 결정
+- 컬러 로고라 기존 검은 둥근 네모 배경은 쓰지 않음.
+- 모바일은 IconRail이 없어서 이 마크가 안 보임. 상단바·로그인·파비콘 적용은 별도.
+
+### 다음
+- 필요 시 TopBar/로그인/파비콘에도 동일 로고 배치.

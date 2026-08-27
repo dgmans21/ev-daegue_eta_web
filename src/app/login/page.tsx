@@ -263,8 +263,16 @@ function LoginPageContent() {
           ← 지도로 돌아가기
         </Link>
 
+        <img
+          src="/brand/logo.png"
+          alt="ChargePick"
+          width={80}
+          height={67}
+          className="mt-5 h-14 w-auto object-contain sm:mt-8 sm:h-16"
+          draggable={false}
+        />
         <h1
-          className="mt-3 shrink-0 text-[22px] font-extrabold tracking-tight text-[var(--text)] sm:mt-6 sm:text-[28px]"
+          className="mt-2.5 shrink-0 text-[22px] font-extrabold tracking-tight text-[var(--text)] sm:mt-4 sm:text-[28px]"
           style={{ fontFamily: "var(--font-display), sans-serif" }}
         >
           로그인
