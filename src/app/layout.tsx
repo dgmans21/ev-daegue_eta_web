@@ -11,7 +11,7 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "ChargePick · 대구",
+  title: "ChargerPick · 대구",
   description: "도착했을 때 충전할 수 있는 곳을 찾는 대구 EV 세이프차지",
 };
 
