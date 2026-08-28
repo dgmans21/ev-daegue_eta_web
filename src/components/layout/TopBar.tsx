@@ -65,7 +65,7 @@ export function TopBar({ apiOnline }: { apiOnline: boolean | null }) {
               className="truncate text-[12px] font-semibold tracking-tight text-[var(--text)] sm:text-[13px]"
               style={{ fontFamily: "var(--font-display), sans-serif" }}
             >
-              ChargePick
+              ChargerPick
             </p>
           </div>
         </div>
