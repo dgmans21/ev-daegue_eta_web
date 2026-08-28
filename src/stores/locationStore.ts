@@ -126,7 +126,11 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   setSource: (source) => set({ source }),
   setStatus: (status) => set({ status }),
   setError: (error) => set({ error }),
-  setFollow: (follow) => set({ follow }),
+  setFollow: (follow) => {
+    // 시험주행: 카메라 chase 금지. 클릭마다 setCenter → 지도가 마우스에 붙음.
+    if (follow && get().testMode) return;
+    set({ follow });
+  },
 
   /**
    * Toggle fake-GPS only. Enabling stops real watch.
@@ -135,8 +139,10 @@ export const useLocationStore = create<LocationState>((set, get) => ({
   setTestMode: (enabled) => {
     if (enabled) {
       get().stopWatch();
+      set({ testMode: true, follow: false });
+      return;
     }
-    set({ testMode: enabled });
+    set({ testMode: false });
   },
 
   locateOnce: () => { 

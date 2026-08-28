@@ -485,10 +485,11 @@ export function MapView() {
 
   /**
    * follow on: keep camera on coords (watch / 현위치). Drag sets follow false.
+   * 시험주행은 chase 없음 — 클릭 좌표로 setCenter 하면 지도가 마우스에 붙음.
    * Does not change zoom (RadiusControl camera lock untouched).
    */
   useEffect(() => {
-    if (!follow || !coords || !mapReady) return;
+    if (testMode || !follow || !coords || !mapReady) return;
     if (isMapGestureActive()) return;
     const map = mapInstanceRef.current;
     if (!map || !window.Tmapv2?.LatLng) return;
@@ -496,7 +497,7 @@ export function MapView() {
     skipCenterSyncRef.current = true;
     map.setCenter(new window.Tmapv2.LatLng(coords.lat, coords.lng));
     setCenter({ lat: coords.lat, lng: coords.lng });
-  }, [coords?.lat, coords?.lng, follow, mapReady, setCenter]);
+  }, [coords?.lat, coords?.lng, follow, testMode, mapReady, setCenter]);
 
   /**
    * Driving test pick: capture-phase on map div so Circle/Marker cannot swallow taps.

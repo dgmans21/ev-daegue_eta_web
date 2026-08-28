@@ -88,10 +88,11 @@ function runCarRouteFetch(opts: {
   const reqId = ++routeReqId;
 
   if (mode === "start") {
-    useLocationStore.getState().setFollow(false);
+    const loc = useLocationStore.getState();
+    // 시험주행은 카메라 chase 없음. follow+클릭 setCenter → 마우스에 지도가 붙음.
+    loc.setFollow(!loc.testMode);
 
     const ROUTE_FOCUS_ZOOM = 17; // 현위치와 동일 (검색 18 아님)
-    useLocationStore.getState().setFollow(true); // 현위치 탭과 동일하면 추천
     const { map, setCenter, setZoom, setMobileSheetSnap, setSelectedId } =
       useMapStore.getState();
     setCenter({ lat: origin.lat, lng: origin.lng });
