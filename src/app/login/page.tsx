@@ -265,7 +265,7 @@ function LoginPageContent() {
 
         <img
           src="/brand/logo.png"
-          alt="ChargePick"
+          alt="ChargerPick"
           width={80}
           height={67}
           className="mt-5 h-14 w-auto object-contain sm:mt-8 sm:h-16"

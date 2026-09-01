@@ -120,11 +120,11 @@ export function IconRail({
     >
       <div
         className="mb-6 flex h-11 w-11 items-center justify-center"
-        title="ChargePick"
+        title="ChargerPick"
       >
         <img
           src="/brand/logo.png"
-          alt="ChargePick"
+          alt="ChargerPick"
           width={44}
           height={44}
           className="h-11 w-11 object-contain"

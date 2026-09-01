@@ -3078,6 +3078,20 @@ unCategorySearch: center + radiusKm, 성공 무메시지, 실패 console.error.
 ### 다음
 - 없음.
 
+## 2026-08-19 — Flutter WebView 초안 (mobile/)
+
+### 한 일
+- 워크스페이스에 `mobile/` Flutter 셸 추가. 화면 하나에서 프로덕션 Vercel `/map`을 WebView로 로드.
+- JS 허용, Android 뒤로가기=WebView history, 위치 권한 매니페스트/iOS 문구, 지도 제스처는 EagerGestureRecognizer.
+- `web/`·`api/` 코드는 변경 없음.
+
+### 결정
+- 1단계: 원 소스 수정 없이 실기기에서 맵·로그인·현위치·소셜이 같은 WebView 안에서 도는지 확인.
+- URL은 `mobile/lib/main.dart` `kAppUrl` (Vercel `/map`).
+
+### 다음
+- 실기기 스모크. 깨지는 항목만 2단계(셸 또는 필요 시 웹 노치/OAuth).
+
 ## 2026-08-19 — AI 상세 카드 거리: 추천 distanceM
 
 ### 한 일
@@ -3155,6 +3169,19 @@ unCategorySearch: center + radiusKm, 성공 무메시지, 실패 console.error.
 ### 다음
 - 수동: 402 → 새로고침 → 해당 충전소 카드에서 이어하기/취소 확인.
 
+## 2026-08-21 — HTML 발표 슬라이드 사진 대체 금지
+
+### 한 일
+- .cursor/rules/html-slides-no-photo.mdc (alwaysApply)와 docs/rules/09_html_slides.md 추가.
+- docs/rules/README.md 인덱스에 09 항목 등록.
+
+### 결정
+- 발표자료_수정용_전체.html의 HTML 장(div.slide)을 PNG/JPG/data URI 사진으로 바꾸지 않는다.
+- 제목·본문은 HTML/CSS만 수정. 이미 들어 있는 orig/diagram/shot 이미지는 유지.
+
+### 다음
+- 발표 HTML은 한 줄 수정 시 파일 전체를 다시 쓰지 말 것.
+
 ## 2026-08-24 — draft 홀드 지도 배너
 
 ### 한 일
@@ -3204,3 +3231,21 @@ unCategorySearch: center + radiusKm, 성공 무메시지, 실패 console.error.
 
 ### 다음
 - 필요 시 TopBar/로그인/파비콘에도 동일 로고 배치.
+## 2026-08-27 — 로그인 로고·파비콘
+
+### 한 일
+- 로그인 화면 제목 위에 브랜드 로고(\/brand/logo.png\) 표시.
+- \web/src/app/icon.png\ · \avicon.ico\ 추가. 탭 아이콘은 로고 정사각(투명 배경).
+- 지도 상단바(모바일 ChargePick 칩)에는 넣지 않음.
+
+### 결정
+- 모바일 지도 화면에는 로고를 두지 않음. 로그인·파비콘만.
+
+### 다음
+- 회원가입 화면 동일 로고는 요청 시.
+## 2026-09-01 — mobile Flutter OS 위치 권한 요청
+
+- 한 일: permission_handler + location_permission.dart — 앱 시작 시 안내 AlertDialog → OS locationWhenInUse 요청. 영구 거부 시 설정 열기. WebView load 전 실행.
+- 결정: WebView geolocation callback만으로는 code 2(POSITION_UNAVAILABLE) 해결 불가 — OS 런타임 권한 선행.
+- 다음: 실기기에서 허용 후 현위치·stations 반경 재확인.
+
