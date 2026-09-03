@@ -11,6 +11,7 @@ import {
   fetchPointsBalance,
   failPointCharge,
 } from "@/lib/api";
+import { FEATURES, PAYMENTS_DISABLED_NOTICE } from "@/lib/features";
 import { useAuthStore } from "@/stores/authStore";
 
 const CHARGE_PRESETS = [1000, 5000, 10000, 50000] as const;
@@ -236,6 +237,14 @@ export function PointsPanel() {
         <p className="mt-0.5 text-[11px] text-[var(--text-secondary)]">
           잔액 · 포인트 충전 · 이용 결제
         </p>
+        {!FEATURES.paymentsEnabled ? (
+          <p
+            className="mt-2 rounded-[8px] border border-[var(--warning)]/40 bg-[var(--warning-soft)] px-2.5 py-2 text-[11px] leading-snug text-[var(--warning)]"
+            role="status"
+          >
+            {PAYMENTS_DISABLED_NOTICE}
+          </p>
+        ) : null}
         <GuestAuthBanner
           className="mt-2"
           message="로그인해야 포인트를 쓸 수 있습니다"
@@ -291,7 +300,7 @@ export function PointsPanel() {
                 onChange={(e) =>
                   setChargeAmountInput(e.target.value.replace(/[^\d]/g, ""))
                 }
-                disabled={!isAuthenticated || busy}
+                disabled={!FEATURES.paymentsEnabled || !isAuthenticated || busy}
                 placeholder="금액 입력"
                 className={`${fieldClass} pr-10 tabular-nums`}
                 autoComplete="off"
@@ -312,7 +321,7 @@ export function PointsPanel() {
               <button
                 key={n}
                 type="button"
-                disabled={!isAuthenticated || busy}
+                disabled={!FEATURES.paymentsEnabled || !isAuthenticated || busy}
                 onClick={() =>
                   setChargeAmountInput((prev) => addToAmountInput(prev, n))
                 }
@@ -323,7 +332,7 @@ export function PointsPanel() {
             ))}
             <button
               type="button"
-              disabled={!isAuthenticated || busy}
+              disabled={!FEATURES.paymentsEnabled || !isAuthenticated || busy}
               onClick={() => setChargeAmountInput("")}
               className={`${resetBtnClass} col-span-2`}
             >
@@ -333,7 +342,12 @@ export function PointsPanel() {
 
           <button
             type="button"
-            disabled={!isAuthenticated || busy || chargeAmountParsed == null}
+            disabled={
+              !FEATURES.paymentsEnabled ||
+              !isAuthenticated ||
+              busy ||
+              chargeAmountParsed == null
+            }
             onClick={() => void onPortOneCharge()}
             className="mt-3 flex min-h-12 w-full items-center justify-center rounded-[12px] bg-[var(--text)] px-3 text-[14px] font-semibold text-white shadow-[var(--shadow-sm)] touch-manipulation disabled:opacity-50"
           >
@@ -441,7 +455,7 @@ export function PointsPanel() {
 
             <button
               type="button"
-              disabled={busy || creditPointsParsed == null}
+              disabled={!FEATURES.paymentsEnabled || busy || creditPointsParsed == null}
               onClick={() => void onAdminCredit()}
               className="mt-3 flex min-h-12 w-full items-center justify-center rounded-[12px] border border-[var(--accent)] bg-[var(--accent-soft)] px-3 text-[14px] font-semibold text-[var(--text)] touch-manipulation disabled:opacity-50"
             >
