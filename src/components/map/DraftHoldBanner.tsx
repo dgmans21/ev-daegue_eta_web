@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FEATURES, PAYMENTS_DISABLED_NOTICE } from "@/lib/features";
 import { cancelUsageOrder } from "@/lib/api";
 import { useAuthStore } from "@/stores/authStore";
 import { useMapStore } from "@/stores/mapStore";
@@ -64,6 +65,11 @@ export function DraftHoldBanner() {
         진행 중이던 가결제가 있습니다. {holdLabel}
         이어서 결제하거나 취소해 주세요.
       </p>
+      {!FEATURES.paymentsEnabled ? (
+        <p className="mt-1.5 text-[11px] leading-snug text-[var(--warning)]">
+          {PAYMENTS_DISABLED_NOTICE}
+        </p>
+      ) : null}
       <div className="mt-2 flex gap-2">
         <button
           type="button"
@@ -75,7 +81,7 @@ export function DraftHoldBanner() {
         </button>
         <button
           type="button"
-          disabled={busy}
+          disabled={!FEATURES.paymentsEnabled || busy}
           onClick={() => void onContinue()}
           className="min-h-9 flex-[1.2] rounded-[var(--radius-pill)] bg-[var(--text)] px-3 text-[12px] font-semibold text-white touch-manipulation disabled:opacity-40"
         >

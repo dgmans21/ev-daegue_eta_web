@@ -11,6 +11,7 @@ import {
 } from "@/lib/chargerTypes";
 import { FavoriteStarButton } from "@/components/map/FavoriteStarButton";
 import { parkingBarClass, parkingKind } from "@/lib/parking";
+import { FEATURES, PAYMENTS_DISABLED_NOTICE } from "@/lib/features";
 import { haversineMeters } from "@/lib/map/stationHit";
 import { useLocationStore } from "@/stores/locationStore";
 import { useMapStore } from "@/stores/mapStore";
@@ -921,6 +922,14 @@ export function StationDetailCard() {
           </button>
         </div>
       ) : null}
+      {!FEATURES.paymentsEnabled ? (
+        <p
+          className="mt-3 rounded-[8px] border border-[var(--warning)]/40 bg-[var(--warning-soft)] px-2.5 py-2 text-[12px] leading-snug text-[var(--warning)]"
+          role="status"
+        >
+          {PAYMENTS_DISABLED_NOTICE}
+        </p>
+      ) : null}
       {chargePayMessage ? (
         <p
           className={[
@@ -944,7 +953,7 @@ export function StationDetailCard() {
               <div className="flex gap-2">
                 <button
                   type="button"
-                  disabled={chargePaying}
+                  disabled={!FEATURES.paymentsEnabled || chargePaying}
                   onClick={() => setTopUpAmountKrw(5000)}
                   className="min-h-9 flex-1 rounded-[10px] border border-[var(--border)] bg-white px-2 text-[12px] font-semibold disabled:opacity-40"
                 >
@@ -952,7 +961,7 @@ export function StationDetailCard() {
                 </button>
                 <button
                   type="button"
-                  disabled={chargePaying}
+                  disabled={!FEATURES.paymentsEnabled || chargePaying}
                   onClick={() => setTopUpAmountKrw(10000)}
                   className="min-h-9 flex-1 rounded-[10px] border border-[var(--border)] bg-white px-2 text-[12px] font-semibold disabled:opacity-40"
                 >
@@ -973,7 +982,7 @@ export function StationDetailCard() {
               <div className="flex gap-2">
                 <button
                   type="button"
-                  disabled={chargePaying}
+                  disabled={!FEATURES.paymentsEnabled || chargePaying}
                   onClick={() => void dismissPendingOrder()}
                   className="flex-1 rounded-[var(--radius-pill)] border border-[var(--border)] px-3 py-2.5 text-[13px] font-semibold text-[var(--text-secondary)] disabled:opacity-40"
                 >
@@ -981,7 +990,11 @@ export function StationDetailCard() {
                 </button>
                 <button
                   type="button"
-                  disabled={chargePaying || topUpAmountKrw < 1000}
+                  disabled={
+                    !FEATURES.paymentsEnabled ||
+                    chargePaying ||
+                    topUpAmountKrw < 1000
+                  }
                   onClick={() => void handleShortfallTopUp(topUpAmountKrw)}
                   className="flex-[1.4] rounded-[var(--radius-pill)] bg-[var(--accent)] px-3 py-2.5 text-[13px] font-semibold text-white disabled:opacity-40"
                 >
@@ -1032,7 +1045,10 @@ export function StationDetailCard() {
         {!routeMode && !metaMode && !chargeMode ? (
           <button
             type="button"
+            disabled={!FEATURES.paymentsEnabled}
+            aria-disabled={!FEATURES.paymentsEnabled}
             onClick={() => {
+              if (!FEATURES.paymentsEnabled) return;
               if (!isAuthenticated) {
                 setLoginOpen(true);
                 return;
@@ -1040,7 +1056,12 @@ export function StationDetailCard() {
               setShowMeta(false);
               setChargeMode(true);
             }}
-            className="flex flex-1 items-center justify-center rounded-[var(--radius-pill)] border border-[var(--border)] bg-white px-3 py-2.5 text-[13px] font-semibold text-[var(--text-secondary)] transition hover:bg-[var(--surface-muted)] touch-manipulation"
+            className={[
+              "flex flex-1 items-center justify-center rounded-[var(--radius-pill)] border border-[var(--border)] bg-white px-3 py-2.5 text-[13px] font-semibold text-[var(--text-secondary)] touch-manipulation",
+              FEATURES.paymentsEnabled
+                ? "transition hover:bg-[var(--surface-muted)]"
+                : "cursor-not-allowed opacity-40",
+            ].join(" ")}
           >
             이용 결제
           </button>
@@ -1058,6 +1079,7 @@ export function StationDetailCard() {
           <button
             type="button"
             disabled={
+              !FEATURES.paymentsEnabled ||
               chargePaying ||
               (isAuthenticated &&
                 !chargeSettled &&
@@ -1065,6 +1087,7 @@ export function StationDetailCard() {
                 !chargeDraft.canPay)
             }
             aria-disabled={
+              !FEATURES.paymentsEnabled ||
               chargePaying ||
               (isAuthenticated &&
                 !chargeSettled &&
@@ -1072,6 +1095,7 @@ export function StationDetailCard() {
                 !chargeDraft.canPay)
             }
             onClick={() => {
+              if (!FEATURES.paymentsEnabled) return;
               if (chargePaying) return;
               if (chargeSettled) {
                 closeChargeMode();
@@ -1112,6 +1136,7 @@ export function StationDetailCard() {
             }}
             className={[
               "relative flex flex-[1.4] items-center justify-center gap-1 rounded-[var(--radius-pill)] bg-[var(--accent)] px-4 py-2.5 text-[13px] font-semibold text-white touch-manipulation",
+              !FEATURES.paymentsEnabled ||
               chargePaying ||
               (isAuthenticated &&
                 !chargeSettled &&
